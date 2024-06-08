@@ -4,10 +4,19 @@ import React, {useState} from 'react'
 import styles from './crosswordletters.module.css'
 
 const CrosswordLetter = (props) => {
-    const [letter, setLetter] = useState(props.letter)
+    const [letterObj, setLetterObj] = useState(props.letterObj)
+    const autoFocus = (element) => {
+        if(letterObj.focus){
+            element?.focus()
+        }
+    };
     function changeLetter(letter) {
-        if(letter.target.value.length <= 1){
-            setLetter(letter.target.value);
+        if(letter.target.value.length == 1){
+            setLetterObj({'letter':letter.target.value, 'key':letterObj.key, 'focus': letterObj.focus});
+            //Move focus to next crossword letter block
+            props.focusChange(letterObj, letterObj.key, false);
+        } else if(letter.target.value.length == 0){
+            setLetterObj({'letter':letter.target.value, 'key':letterObj.key, 'focus': letterObj.focus});
         }
     }
     function submitHandler(event) {
@@ -15,9 +24,9 @@ const CrosswordLetter = (props) => {
     }
     return (
         <div className={styles.container}>
-            {letter != '00' ? 
+            {letterObj.letter != '00' ? 
             <form className={styles.letterButton} onSubmit={submitHandler}>
-                <input type="text" value={letter} onChange={changeLetter} className={styles.input}></input>
+                <input ref={autoFocus} type="text" value={letterObj.letter} onChange={changeLetter} className={styles.input}></input>
             </form>
             :
             <div className={styles.blackBox}></div>
