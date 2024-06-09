@@ -8,6 +8,10 @@
     grid-template-columns: 20% 20% 20% 20% 20%;
 }
 
+.selectBackground{
+    background-color: aqua;
+}
+
 .crossword_letter{
     text-align: center;
     border: 1px solid rgba(0, 0, 0, 0.8);
