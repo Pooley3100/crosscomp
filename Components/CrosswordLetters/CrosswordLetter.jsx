@@ -9,7 +9,8 @@ const CrosswordLetter = (props) => {
         props.cellChange(letterObj.key)
     }
     const autoFocus = (element) => {
-        if(letterObj.focus){
+        //If state variable is used here it won't update fast enough on render and focus will lag sometimes (TODO: why this is necessary?)
+        if(props.letterObj.focus){
             element?.focus()
         }
     };

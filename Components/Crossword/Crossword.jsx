@@ -49,13 +49,26 @@ const Crossword = () => {
 
     //Currently stores crossword grid, this will be moved to API
     const [letterGrid, setLetterGrid] = useState([{'letter':'w', 'key':0, 'focus': false},{'letter':'e', 'key':1, 'focus': false},{'letter':'i', 'key':2, 'focus': false},{'letter':'r', 'key':3, 'focus': false},{'letter':'d', 'key':4, 'focus': false},{'letter':'w', 'key':5, 'focus': false},{'letter':'e', 'key':6, 'focus': false},{'letter':'i', 'key':7, 'focus': false},{'letter':'r', 'key':8, 'focus': false},{'letter':'d', 'key':9, 'focus': false},{'letter':'w', 'key':10, 'focus': false},{'letter':'e', 'key':11, 'focus': false},{'letter':'i', 'key':12, 'focus': false},{'letter':'r', 'key':13, 'focus': false},{'letter':'d', 'key':14, 'focus': false},{'letter':'w', 'key':15, 'focus': false},{'letter':'e', 'key':16, 'focus': false},{'letter':'i', 'key':17, 'focus': false},{'letter':'r', 'key':18, 'focus': false},{'letter':'d', 'key':19, 'focus': false},{'letter':'w', 'key':20, 'focus': false},{'letter':'00', 'key':21, 'focus': false},{'letter':'i', 'key':22, 'focus': false},{'letter':'r', 'key':23, 'focus': false},{'letter':'d', 'key':24, 'focus': false}]);
+    // 0,1,2,3,4 for horizontal Qs then (+ 5 on each key) to get to vertical levels
+    const questions = [{'key' : 0, 'grid': 'horizontal', 'question': 'something is a bit off', 'answer': 'weird', 'letters': 5}];
     
+    //Calculates what the current question is by using grid orient and the current cell
+    var questionNumber = 0;
     //Calculate grid level to select horizontal or vertical cells background
     if(gridOrient){
         var currentCellGridLevel = currentCell % 5;
+        questionNumber = currentCellGridLevel + 5
     } else{
         var currentCellGridLevel = Math.floor(currentCell/5);
+        questionNumber = currentCellGridLevel
     }
+    
+    questions.map((question) => {
+        if(question.key == questionNumber){
+            console.log(question.question)
+        }
+    });
+
     return (
         <div className={styles.container}>
             {letterGrid.map((letterObj, index)=>{
