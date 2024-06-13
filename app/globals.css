@@ -15,7 +15,10 @@
 }
 
 .container{
-  display: flex;
+  display: grid;
+  grid-template-columns: 100%;
+  grid-template-rows: 90%;
+  flex-direction: column;
   justify-content: center;
   height: 100vh;
 }
