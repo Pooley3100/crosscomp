@@ -15,11 +15,24 @@
 }
 
 .container{
-  display: grid;
-  grid-template-columns: 100%;
-  grid-template-rows: 90%;
+  display: grid; 
   flex-direction: column;
   justify-content: center;
   height: 100vh;
 }
+
+@media screen and (max-width: 700px) {
+  .container{
+    grid-template-columns: 100%;
+    grid-template-rows: 90%;
+  }
+}
+
+@media screen and (min-width: 700px) {
+  .container{
+    grid-template-columns: auto auto auto;
+  }
+}
+
+
 
