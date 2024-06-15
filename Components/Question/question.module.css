@@ -20,14 +20,33 @@
 }
 
 .questionText{
+    border-width: 2px;
+    border-color: rgba(11, 10, 10, 0.5);
+}
 
+.questionList{
+    width: 100%;
+    text-align: center;
 }
 
 .questionListHorizontal{
     position: fixed;
     left: 0;
+    background-color: rgba(94, 85, 85, 0.2);
+    width: 16.5%;
+    height: 100%;
+    display: flex;
+    justify-content: center;
+    align-items: center;
 }
 
 .questionListVertical{
-
+    position: fixed;
+    right: 0;
+    background-color: rgba(94, 85, 85, 0.2);
+    width: 16.5%;
+    height: 100%;
+    display: flex;
+    justify-content: center;
+    align-items: center;
 }
