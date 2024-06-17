@@ -5,6 +5,10 @@
     height: 100%;
 }
 
+.selectedQuestion{
+    background-color: rgb(222, 222, 14);
+}
+
 .questionBox{
     border-width: 2px;
     border-color: black;
@@ -22,11 +26,14 @@
 .questionText{
     border-width: 2px;
     border-color: rgba(11, 10, 10, 0.5);
+    padding-top: 10px;
+    padding-bottom: 10px;
 }
 
 .questionList{
-    width: 100%;
     text-align: center;
+    list-style: decimal inside none;
+    width: 100%;
 }
 
 .questionListHorizontal{

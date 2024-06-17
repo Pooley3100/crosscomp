@@ -16,8 +16,10 @@ const CrosswordLetter = (props) => {
     };
     function changeLetter(letter) {
         if(letter.target.value.length == 1){
+            if(letterObj.letter != '00'){
             setLetterObj({'letter':letter.target.value, 'key':letterObj.key, 'focus': letterObj.focus});
             //Move focus to next crossword letter block
+            }
             props.focusChange({'letter':letter.target.value, 'key':letterObj.key, 'focus': false});
         } else if(letter.target.value.length == 0){
             setLetterObj({'letter':letter.target.value, 'key':letterObj.key, 'focus': letterObj.focus});
