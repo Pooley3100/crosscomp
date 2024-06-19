@@ -10,6 +10,10 @@
     justify-content: center;
 }
 
+.goldBox{
+    background-color: gold !important;
+}
+
 .blackBox{
     width: 100%;    
     height: 100%;

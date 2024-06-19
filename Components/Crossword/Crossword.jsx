@@ -26,6 +26,20 @@ const Crossword = (props) => {
     //False for horizontal question, true for vertical question
     const [gridOrient, setGridOrient] = useState(false);
 
+    async function sendWord(word, questionKey) {
+        const response = await fetch('http://localhost:3000/api/Crossword',
+            {
+                method: "POST",
+                body: JSON.stringify({
+                    'answer': word,
+                    'key': questionKey
+                })
+            })
+        const result = await response.json();
+        console.log(`Server response: ${result.result}`)
+        return (result.result);
+    }
+
     const cellChange = (key) => {
         props.changeCell(key);
         setLetterGrid(letterGrid.map(obj => {
@@ -65,7 +79,7 @@ const Crossword = (props) => {
     const onGridHandler = () => setGridOrient(!gridOrient);
 
     //Currently stores crossword grid, this will be moved to API
-    const [letterGrid, setLetterGrid] = useState([{ 'letter': '', 'key': 0, 'focus': false }, { 'letter': '', 'key': 1, 'focus': false }, { 'letter': '', 'key': 2, 'focus': false }, { 'letter': '', 'key': 3, 'focus': false }, { 'letter': '00', 'key': 4, 'focus': false }, { 'letter': '', 'key': 5, 'focus': false }, { 'letter': '', 'key': 6, 'focus': false }, { 'letter': '', 'key': 7, 'focus': false }, { 'letter': '', 'key': 8, 'focus': false }, { 'letter': '', 'key': 9, 'focus': false }, { 'letter': '', 'key': 10, 'focus': false }, { 'letter': '', 'key': 11, 'focus': false }, { 'letter': '', 'key': 12, 'focus': false }, { 'letter': '', 'key': 13, 'focus': false }, { 'letter': '', 'key': 14, 'focus': false }, { 'letter': '', 'key': 15, 'focus': false }, { 'letter': '', 'key': 16, 'focus': false }, { 'letter': '', 'key': 17, 'focus': false }, { 'letter': '', 'key': 18, 'focus': false }, { 'letter': '', 'key': 19, 'focus': false }, { 'letter': '', 'key': 20, 'focus': false }, { 'letter': '', 'key': 21, 'focus': false }, { 'letter': '', 'key': 22, 'focus': false }, { 'letter': '00', 'key': 23, 'focus': false }, { 'letter': '00', 'key': 24, 'focus': false }]);
+    const [letterGrid, setLetterGrid] = useState([{ 'letter': '', 'key': 0, 'focus': false, 'correct': false }, { 'letter': '', 'key': 1, 'focus': false, 'correct': false }, { 'letter': '', 'key': 2, 'focus': false, 'correct': false }, { 'letter': '', 'key': 3, 'focus': false, 'correct': false }, { 'letter': '00', 'key': 4, 'focus': false, 'correct': false }, { 'letter': '', 'key': 5, 'focus': false, 'correct': false }, { 'letter': '', 'key': 6, 'focus': false, 'correct': false }, { 'letter': '', 'key': 7, 'focus': false, 'correct': false }, { 'letter': '', 'key': 8, 'focus': false, 'correct': false }, { 'letter': '', 'key': 9, 'focus': false, 'correct': false }, { 'letter': '', 'key': 10, 'focus': false, 'correct': false }, { 'letter': '', 'key': 11, 'focus': false, 'correct': false }, { 'letter': '', 'key': 12, 'focus': false, 'correct': false }, { 'letter': '', 'key': 13, 'focus': false, 'correct': false }, { 'letter': '', 'key': 14, 'focus': false, 'correct': false }, { 'letter': '', 'key': 15, 'focus': false, 'correct': false }, { 'letter': '', 'key': 16, 'focus': false, 'correct': false }, { 'letter': '', 'key': 17, 'focus': false, 'correct': false }, { 'letter': '', 'key': 18, 'focus': false, 'correct': false }, { 'letter': '', 'key': 19, 'focus': false, 'correct': false }, { 'letter': '', 'key': 20, 'focus': false, 'correct': false }, { 'letter': '', 'key': 21, 'focus': false, 'correct': false }, { 'letter': '', 'key': 22, 'focus': false, 'correct': false }, { 'letter': '00', 'key': 23, 'focus': false, 'correct': false }, { 'letter': '00', 'key': 24, 'focus': false, 'correct': false }]);
 
     //Calculates what the current question is by using grid orient and the current cell
     var questionNumber = 0;
@@ -84,6 +98,42 @@ const Crossword = (props) => {
         }
     });
 
+    //Check if current word is correct
+    const checkCorrect = () => {
+        //Need to get corresponding word from lettergrid
+        var currentWord = ''
+        letterGrid.forEach((letterObj) => {
+            if (props.currentQuestionObj.grid === 'horizontal') {
+                if (Math.floor(letterObj.key / 5) == props.currentQuestionObj.key && letterObj.letter != '00') {
+                    currentWord += letterObj.letter
+                }
+            } else {
+                if (letterObj.key % 5 == props.currentQuestionObj.key % 5 && letterObj.letter != '00') {
+                    currentWord += letterObj.letter
+                }
+            }
+        })
+        //Change correct based on result return
+        sendWord(currentWord, props.currentQuestionObj.key).then((result) => {
+            if (result) {
+                setLetterGrid(letterGrid.map((letterObj) => {
+                    if (props.currentQuestionObj.grid === 'horizontal') {
+                        if (Math.floor(letterObj.key / 5) == props.currentQuestionObj.key && letterObj.letter != '00') {
+                            letterObj.correct = true
+                            return letterObj
+                        }
+                    } else {
+                        if (letterObj.key % 5 == props.currentQuestionObj.key % 5 && letterObj.letter != '00') {
+                            letterObj.correct = true
+                            return letterObj
+                        }
+                    }
+                    return letterObj
+                }))
+            }
+        });
+    }
+
     return (
         <div className={styles.container}>
             {letterGrid.map((letterObj, index) => {
@@ -94,7 +144,7 @@ const Crossword = (props) => {
                 }
                 var backgroundColor = ``;
                 (letterObj.key == currentCell || objCellGridLevel === currentCellGridLevel) ? backgroundColor = `${styles.selectBackground} ${styles.crossword_letter}` : backgroundColor = `${styles.crossword_letter}`;
-                return (<div className={backgroundColor} key={index}><CrosswordLetter letterObj={letterObj} focusChange={focusChange} cellChange={cellChange} onGridHandler={onGridHandler} /></div>)
+                return (<div className={backgroundColor} key={index}><CrosswordLetter checkWord={checkCorrect} letterObj={letterObj} focusChange={focusChange} cellChange={cellChange} onGridHandler={onGridHandler} /></div>)
             })}
         </div>
     )

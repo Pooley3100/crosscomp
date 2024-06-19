@@ -1,8 +1,9 @@
 [✔️] = questions on the side
-[✔️] = click on questions selects the crossword 
+[✔️] = click on questions selects the crossword
+[] = send each word to api
 [] = api with communication query if answer is correct
-[] = communication between two pages
-[] = user accounts
+[] = communication between two accounts on same crossword
+[] = user accounts.
 [] = maybe use a llm to create crosswords (some sort of backend engine creating them, even just with a dictionary and match???
 
 
