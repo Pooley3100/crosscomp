@@ -10,12 +10,15 @@ export default function Home() {
   //Curently selected cell item in crossword
   const [currentCell, setCurrentCell] = useState(0);
 
-  const onCellChange = (key: number) => {
+  const onCellChange = (key: number, orient=false) => {
     setCurrentCell(key);
-
+    let swapGrid = question.grid
+    if(orient){
+      swapGrid = swapGrid == 'vertical' ? 'horizontal' : 'vertical';
+    }
     //Compute if question changes
     let questionNumber = 0
-    if (question.grid == 'vertical') {
+    if (swapGrid == 'vertical' ) {
       questionNumber = (key % 5)  + 5;
     } else {
       questionNumber = Math.floor(key / 5);
@@ -28,8 +31,8 @@ export default function Home() {
     }
     changeQuestion(questionObj)
   }
-  const changeQuestion = (question: any) => {
-    setQuestion(question);
+  const changeQuestion = (questionChange: any) => {
+    setQuestion(() => {return questionChange});
   }
 
   //Put questions on api at some point

@@ -79,9 +79,7 @@ const Crossword = (props) => {
 
     //Function to swith between hor and vert on double click
     function onGridHandler(){
-        props.changeQuestion((question) => {
-            let changeGrid = question.grid == 'horizontal' ? 'vertical' : 'horizontal' 
-            return({...question,grid:changeGrid})})
+        props.changeCell(props.currentCell, true)
     };    
 
     //Calculates what the current question is by using grid orient and the current cell TODO: Maybe put questionKey into lettergrid?
