@@ -15,14 +15,14 @@ const CrosswordLetter = (props) => {
         }
     };
     function changeLetter(letter) {
+        //Move focus to next crossword letter block if length 1
         if(letter.target.value.length == 1){
             if(props.letterObj.letter != '00'){
-            setLetterObj({'letter':letter.target.value, 'key':props.letterObj.key, 'focus': props.letterObj.focus, 'correct': props.letterObj.correct});
-            //Move focus to next crossword letter block
+                setLetterObj((letterObj) => {return({...letterObj, 'letter':letter.target.value})});
             }
-            props.focusChange({'letter':letter.target.value, 'key':props.letterObj.key, 'focus': false, 'correct': props.letterObj.correct});
+            props.focusChange({...letterObj, 'letter':letter.target.value});
         } else if(letter.target.value.length == 0){
-            setLetterObj({'letter':letter.target.value, 'key':props.letterObj.key, 'focus': props.letterObj.focus, 'correct': props.letterObj.correct});
+            setLetterObj((letterObj) => {return({...letterObj, 'letter':letter.target.value})});
         }
     }
     function checkHandler(e){

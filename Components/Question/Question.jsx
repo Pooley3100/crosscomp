@@ -5,7 +5,6 @@ import { useWindowSize } from "@uidotdev/usehooks";
 const Question = (props) => {
   const size = useWindowSize();
   const questionChange = (questionObj) => {
-    console.log(questionObj);
     if(questionObj.key < 5) questionObj.key *= 5;
     props.changeCell(questionObj.key);
     props.changeQuestion(questionObj);
@@ -22,8 +21,8 @@ const Question = (props) => {
         <>
           <div className={styles.questionListHorizontal}>
             <ol className={styles.questionList}>
-              {props.questionList.slice(0, 5).map((question) => {
-                return (<li  className={question.question == props.question.question ? selectedQuestion : styles.questionText}>
+              {props.questionList.slice(0, 5).map((question, index) => {
+                return (<li key={index} className={question.question == props.question.question ? selectedQuestion : styles.questionText}>
                   <button onClick={() => questionChange(question)}>{question.question}</button>
                 </li>)
               })
@@ -32,8 +31,8 @@ const Question = (props) => {
           </div>
           <div className={styles.questionListVertical}>
             <ol className={styles.questionList}>
-              {props.questionList.slice(5, 10).map((question) => {
-                return (<li className={question.question == props.question.question ? selectedQuestion : styles.questionText}>
+              {props.questionList.slice(5, 10).map((question, index) => {
+                return (<li key={index} className={question.question == props.question.question ? selectedQuestion : styles.questionText}>
                   <button onClick={() => questionChange(question)}>{question.question}</button>
                 </li>)
               })

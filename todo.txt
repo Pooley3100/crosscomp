@@ -1,12 +1,18 @@
 [✔️] = questions on the side
 [✔️] = click on questions selects the crossword
-[] = send each word to api
-[] = api with communication query if answer is correct
+[✔️] = can use ... to better set letterObj for sure
+[✔️] = update letterGrid array immutably
+[✔️] = send each word to api
+[✔️] = refactor states a bit, maybe lift up a bit TOO MANY STATES
+[] = change {key} variable name in questions and lettergrid - too confusing
+[] = maybe attach question reference to each individual cell in lettergrid instead of calculation each time?
+[] = api with communication query for all crossword if answer is correct
 [] = communication between two accounts on same crossword
 [] = user accounts.
+[] = unit tests.
+[] = variable size crossword uhoh, 5 is used like everywhere
 [] = maybe use a llm to create crosswords (some sort of backend engine creating them, even just with a dictionary and match???
 
 
 BUGS:
 Slight overlap when resizing screen.
-Bad set state
