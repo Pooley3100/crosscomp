@@ -2,6 +2,7 @@
 
 import React, { useState } from 'react'
 import styles from './crossword.module.css'
+import {findWords, checkCorrect} from '@/lib/sortGrid'
 import CrosswordLetter from '@/Components/CrosswordLetters/CrosswordLetter'
 
 const Crossword = (props) => {
@@ -15,20 +16,6 @@ const Crossword = (props) => {
         gridOrient = false
     } else {
         gridOrient = true
-    }
-    //Communicate with backend
-    async function sendWord(word, questionKey) {
-        const response = await fetch('http://localhost:3000/api/Crossword',
-            {
-                method: "POST",
-                body: JSON.stringify({
-                    'answer': word,
-                    'key': questionKey
-                })
-            })
-        const result = await response.json();
-        console.log(`Server response: ${result.result}`)
-        return (result.result);
     }
 
     //Called on every click of a cell to move focus and inform which Question to select
@@ -55,9 +42,17 @@ const Crossword = (props) => {
         }
     })
 
-    //Called when letter is set and move automatically to next cell
+    //Call to lib to extract all words and check all
+    const checkCrossword = (newLetterGrid) => {
+        let request = findWords(newLetterGrid);
+        request.then((result) => {console.log(result)})
+    }
+
+    //Called when letter is entered and move automatically to next cell
+    //Calls checkCrossword on each enter
     const focusChange = (letterObj) => {
-        setLetterGrid((currentLetterGrid) => {return(currentLetterGrid.map(obj => {
+        setLetterGrid((currentLetterGrid) => {       
+            var newLetterGrid = (currentLetterGrid.map(obj => {
                 if (obj.key != letterObj.key) {
                     //Set Orient Increment:
                     if (obj.key == letterObj.key + 1 && !gridOrient && obj.letter != '00') {
@@ -73,6 +68,8 @@ const Crossword = (props) => {
                     return letterObj;
                 }
             }))
+            checkCrossword(newLetterGrid);
+            return(newLetterGrid);
         });
         return true;
     };
@@ -93,40 +90,11 @@ const Crossword = (props) => {
         questionNumber = currentCellGridLevel
     }
 
-    //Check if current word is correct
-    const checkCorrect = () => {
-        //Need to get corresponding word from lettergrid
-        var currentWord = ''
-        letterGrid.forEach((letterObj) => {
-            if (props.currentQuestionObj.grid === 'horizontal') {
-                if (Math.floor(letterObj.key / 5) == props.currentQuestionObj.key && letterObj.letter != '00') {
-                    currentWord += letterObj.letter
-                }
-            } else {
-                if (letterObj.key % 5 == props.currentQuestionObj.key % 5 && letterObj.letter != '00') {
-                    currentWord += letterObj.letter
-                }
-            }
-        })
-        //Change correct based on result return
-        sendWord(currentWord, props.currentQuestionObj.key).then((result) => {
-            if (result) {
-                setLetterGrid(letterGrid.map((letterObj) => {
-                    if (props.currentQuestionObj.grid === 'horizontal') {
-                        if (Math.floor(letterObj.key / 5) == props.currentQuestionObj.key && letterObj.letter != '00') {
-                            letterObj.correct = true
-                            return letterObj
-                        }
-                    } else {
-                        if (letterObj.key % 5 == props.currentQuestionObj.key % 5 && letterObj.letter != '00') {
-                            letterObj.correct = true
-                            return letterObj
-                        }
-                    }
-                    return letterObj
-                }))
-            }
-        });
+    //Check if current word is correct when enter key hit
+    const checkWord = () => {
+        checkCorrect(letterGrid, props.currentQuestionObj).then((result) => {if(result != false){
+            setLetterGrid(result)
+        }})
     }
 
     return (
@@ -139,7 +107,7 @@ const Crossword = (props) => {
                 }
                 var backgroundColor = ``;
                 (letterObj.key == props.currentCell || objCellGridLevel === currentCellGridLevel) ? backgroundColor = `${styles.selectBackground} ${styles.crossword_letter}` : backgroundColor = `${styles.crossword_letter}`;
-                return (<div className={backgroundColor} key={index}><CrosswordLetter checkWord={checkCorrect} letterObj={letterObj} focusChange={focusChange} cellChange={cellChange} onGridHandler={onGridHandler} /></div>)
+                return (<div className={backgroundColor} key={index}><CrosswordLetter checkWord={checkWord} letterObj={letterObj} focusChange={focusChange} cellChange={cellChange} onGridHandler={onGridHandler} /></div>)
             })}
         </div>
     )
