@@ -34,7 +34,16 @@ const CrosswordLetter = (props) => {
         props.checkWord();
         event.preventDefault();    
     }
-    var inputStyles = (props.letterObj.correct) ? `${styles.input} ${styles.goldBox}` : `${styles.input}`
+
+    //Calc whether empty or user 1 or 2 enter
+    var inputStyles = ''
+    if(props.letterObj.id == 1){
+        inputStyles = `${styles.input} ${styles.goldBox}`
+     } else if(props.letterObj.id == 2){
+        inputStyles = `${styles.input}  ${styles.redBox}`
+     } else{
+        inputStyles = `${styles.input}`
+     } 
     return (
         <div className={styles.container}>
             {props.letterObj.letter != '00' ? 

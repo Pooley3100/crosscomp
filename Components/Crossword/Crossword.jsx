@@ -1,14 +1,47 @@
 'use client'
 
-import React, { useState } from 'react'
+import React, { useState, useEffect } from 'react'
 import styles from './crossword.module.css'
-import {findWords, checkCorrect} from '@/lib/sortGrid'
+import { findWords, checkCorrect, sortOpponent } from '@/lib/sortGrid'
+import { checkOpponent } from '@/lib/opponent'
 import CrosswordLetter from '@/Components/CrosswordLetters/CrosswordLetter'
 
 const Crossword = (props) => {
     //Currently stores crossword grid, this will be moved to API
-    const [letterGrid, setLetterGrid] = useState([{ 'letter': '', 'key': 0, 'focus': false, 'correct': false }, { 'letter': '', 'key': 1, 'focus': false, 'correct': false }, { 'letter': '', 'key': 2, 'focus': false, 'correct': false }, { 'letter': '', 'key': 3, 'focus': false, 'correct': false }, { 'letter': '00', 'key': 4, 'focus': false, 'correct': false }, { 'letter': '', 'key': 5, 'focus': false, 'correct': false }, { 'letter': '', 'key': 6, 'focus': false, 'correct': false }, { 'letter': '', 'key': 7, 'focus': false, 'correct': false }, { 'letter': '', 'key': 8, 'focus': false, 'correct': false }, { 'letter': '', 'key': 9, 'focus': false, 'correct': false }, { 'letter': '', 'key': 10, 'focus': false, 'correct': false }, { 'letter': '', 'key': 11, 'focus': false, 'correct': false }, { 'letter': '', 'key': 12, 'focus': false, 'correct': false }, { 'letter': '', 'key': 13, 'focus': false, 'correct': false }, { 'letter': '', 'key': 14, 'focus': false, 'correct': false }, { 'letter': '', 'key': 15, 'focus': false, 'correct': false }, { 'letter': '', 'key': 16, 'focus': false, 'correct': false }, { 'letter': '', 'key': 17, 'focus': false, 'correct': false }, { 'letter': '', 'key': 18, 'focus': false, 'correct': false }, { 'letter': '', 'key': 19, 'focus': false, 'correct': false }, { 'letter': '', 'key': 20, 'focus': false, 'correct': false }, { 'letter': '', 'key': 21, 'focus': false, 'correct': false }, { 'letter': '', 'key': 22, 'focus': false, 'correct': false }, { 'letter': '00', 'key': 23, 'focus': false, 'correct': false }, { 'letter': '00', 'key': 24, 'focus': false, 'correct': false }]);
-    //Stores currently selected cell and this with gridOrient infrom Question to show
+    const [letterGrid, setLetterGrid] = useState(() => {
+        var letterArray = []
+        for (var i = 0; i < 25; i++) {
+            if (i == 24 || i == 23 || i == 4) {
+                letterArray.push({ 'letter': '00', 'key': i, 'focus': false, 'id': 0 })
+            } else {
+                letterArray.push({ 'letter': '', 'key': i, 'focus': false, 'id': 0 })
+            }
+
+        }
+        return letterArray
+    });
+
+    const [opponent, setOpponent] = useState([]);
+
+    useEffect(() => {
+        const interval = setInterval(() => {
+            checkOpponent().then((result) => {
+                if (result.length != opponent.length) {
+                    setOpponent(result)
+                }
+            })
+            return () => {
+                clearInterval(interval)
+            };
+        }, 10000)
+    }, [opponent]);
+
+    //Recalculate letterGrid based on opponent array of answers they have done
+    var update = sortOpponent(letterGrid, opponent)
+    if(update){
+        setLetterGrid(update)
+    }
+
     //False for horizontal question, true for vertical question
     let gridOrient = false
 
@@ -20,18 +53,19 @@ const Crossword = (props) => {
 
     //Called on every click of a cell to move focus and inform which Question to select
     const cellChange = (key) => {
-        if(key != props.currentCell){
+        if (key != props.currentCell) {
             props.changeCell(key);
         }
-        setLetterGrid((currentLetterGrid) => {return (currentLetterGrid.map(obj => {
-            if (obj.key == key) {
-                obj.focus = true
-                return obj
-            } else {
-                obj.focus = false
-                return obj
-            }
-        }))
+        setLetterGrid((currentLetterGrid) => {
+            return (currentLetterGrid.map(obj => {
+                if (obj.key == key) {
+                    obj.focus = true
+                    return obj
+                } else {
+                    obj.focus = false
+                    return obj
+                }
+            }))
         });
     }
 
@@ -45,16 +79,16 @@ const Crossword = (props) => {
     //Call to lib to extract all words and check all
     const checkCrossword = (newLetterGrid) => {
         let request = findWords(newLetterGrid);
-        request.then((result) => {console.log(result)})
+        request.then((result) => { console.log(result) })
     }
 
     //Called when letter is entered and move automatically to next cell
     //Calls checkCrossword on each enter
     const focusChange = (letterObj) => {
-        setLetterGrid((currentLetterGrid) => {       
+        setLetterGrid((currentLetterGrid) => {
             var newLetterGrid = (currentLetterGrid.map(obj => {
                 if (obj.key != letterObj.key) {
-                    //Set Orient Increment:
+                    //Set Orient Increment on enter:
                     if (obj.key == letterObj.key + 1 && !gridOrient && obj.letter != '00') {
                         obj.focus = true;
                         props.changeCell(obj.key);
@@ -69,15 +103,15 @@ const Crossword = (props) => {
                 }
             }))
             checkCrossword(newLetterGrid);
-            return(newLetterGrid);
+            return (newLetterGrid);
         });
         return true;
     };
 
     //Function to swith between hor and vert on double click
-    function onGridHandler(){
+    function onGridHandler() {
         props.changeCell(props.currentCell, true)
-    };    
+    };
 
     //Calculates what the current question is by using grid orient and the current cell TODO: Maybe put questionKey into lettergrid?
     var questionNumber = 0;
@@ -92,9 +126,11 @@ const Crossword = (props) => {
 
     //Check if current word is correct when enter key hit
     const checkWord = () => {
-        checkCorrect(letterGrid, props.currentQuestionObj).then((result) => {if(result != false){
-            setLetterGrid(result)
-        }})
+        checkCorrect(letterGrid, props.currentQuestionObj).then((result) => {
+            if (result != false) {
+                setLetterGrid(result)
+            }
+        })
     }
 
     return (

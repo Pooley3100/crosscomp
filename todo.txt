@@ -4,15 +4,21 @@
 [✔️] = update letterGrid array immutably
 [✔️] = send each word to api
 [✔️] = refactor states a bit, maybe lift up a bit TOO MANY STATES
+[] = making too many api requests for opponent
 [] = change {key} variable name in questions and lettergrid - too confusing
 [] = maybe attach question reference to each individual cell in lettergrid instead of calculation each time?
 [] = api with communication query for all crossword if answer is correct
 [] = communication between two accounts on same crossword
-[] = user accounts.
+[] = user accounts creation.
 [] = unit tests.
 [] = variable size crossword uhoh, 5 is used like everywhere
 [] = maybe use a llm to create crosswords (some sort of backend engine creating them, even just with a dictionary and match???
+[] = better movement to next cell on completion (like if next is done already)
 
+MAIN OBJS
+[] = two users simultaneously play (I think just server polling atm)
+[] = user log in with hist and accountID
+[] = change crosswords and create new ones
 
 BUGS:
-Slight overlap when resizing screen.
+[] = Slight overlap when resizing screen.

@@ -6,6 +6,7 @@ const correctQuestions = [{'key' : 0, 'answer': 'talc'},{'key' : 1,'answer': 'on
 'word': 'towel'
 },...]
 */
+//Used to then emit flag for completion
 export async function POST(request) {
     const jsonRequest = await request.json()
     const response = {'result': true}

@@ -1,4 +1,5 @@
 import { NextResponse } from "next/server";
+import { updateResult } from "../opponent/route";
 const correctQuestions = [{'key' : 0, 'answer': 'talc'},{'key' : 1,'answer': 'onion'},{'key' : 2, 'answer': 'wonka'},{'key' :3, 'answer': 'edges'},{'key' : 4, 'answer': 'leo'},{'key' : 5,'answer': 'towel'},{'key' : 6, 'answer': 'anode'},{'key' : 7,'answer': 'lingo'},{'key' : 8,'answer': 'coke'},{'key' : 9, 'answer': 'nas'}];
 
 export async function GET(request) {
@@ -13,6 +14,9 @@ export async function GET(request) {
 export async function POST(request) {
     const jsonRequest = await request.json()
     const response = {'result': false}
-    if(correctQuestions[jsonRequest.key].answer == jsonRequest.answer){ response.result = true};
+    if(correctQuestions[jsonRequest.key].answer == jsonRequest.answer){   
+      response.result = true
+      updateResult({wordKey: jsonRequest.key, clientID: 2, Answer: jsonRequest.answer})
+    };
     return NextResponse.json(response, { status: 200 });
 }
